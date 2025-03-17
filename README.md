@@ -9,17 +9,11 @@
 
 ## 📝 Sobre o projeto
 
-Repositorio para monitoramento de vagas na matricula extraordinaria no SIGAA
+Este repositório contém dois arquivos com funcionalidades distintas:
 
-## 💻 Tecnologias
+`main.py`: Criado para verificar a disponibilidade de vagas em uma turma específica.
 
-#### Tecnologias utilizadas neste projeto:
-
-<p align="center">
-		<img src="img/opencv.png" width="200"/>
-    <img src="img/spacy.png" width="100" height="100"/>
-	</a>
-</p>
+`extra.py`: Um script em Python que realiza a matrícula automaticamente em uma disciplina.
 
 
 ## 🛞 How to run?
@@ -29,6 +23,10 @@ $ chmod +x install.sh
 $ ./install.sh
 
 Basta executar esse comando dentro de um ambiente desejado que todas as bibliotecas contidas no requirements serão instaladas.
+
+<br/>
+
+❗❗Este programa foi testado e utilizado apenas no Ubuntu 24.04.2 LTS. Não há garantias de que funcionará em outras versões ou em outros sistemas operacionais.❗❗
 
 
 
