@@ -18,8 +18,8 @@ Este repositório contém dois arquivos com funcionalidades distintas:
 
 ## 🛞 How to run?
 ```bash
-$ chmod +x install.sh
-$ ./install.sh
+ chmod +x install.sh
+ ./install.sh
 ```
 Basta executar esse comando dentro de um ambiente desejado que todas as bibliotecas contidas no requirements serão instaladas.
 
