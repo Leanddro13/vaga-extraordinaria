@@ -10,21 +10,32 @@ from plyer import notification
 
 from datetime import datetime
 
+from dotenv import load_dotenv
+
+import os
 import time
 import subprocess
 
+# Carrega variáveis do arquivo .env
+load_dotenv()
+
+login = os.getenv("LOGIN")
+senha = os.getenv("SENHA")
+data_nascimento = os.getenv("DATA_NASCIMENTO")
 
 # Lista de matérias a serem monitoradas
 materias = [
     # Exemplo
     {
         "prof": "MARCOS FAGUNDES CAETANO (60h)",
+        "codigo": "CIC0124",
         "horario": "35M12",
         "ensino": "GRADUAÇÃO",
         "departamento": "DEPTO CIÊNCIAS DA COMPUTAÇÃO - BRASÍLIA"
     },
     {
         "prof": "RICARDO PEZZUOL JACOBI (60h)",
+        "codigo": "CIC0130",
         "horario": "24T23",
         "ensino": "GRADUAÇÃO",
         "departamento": "DEPTO CIÊNCIAS DA COMPUTAÇÃO - BRASÍLIA"
@@ -42,6 +53,52 @@ materias = [
 
 def pegaHoras():
     return datetime.now().strftime("[%H:%M]")
+
+# Sistema de matrícula
+
+# TODO: Fazer Chrome entrar no portal do aluno e matricular
+# TODO: Fazer Sistema parar de tentar matricular na matéria já matriculada 
+
+# def realizarMatricula(codigo_componente, horario, nome_prof):
+#     try:
+#         matricula_driver = webdriver.Chrome()
+#         link = 'https://sigaa.unb.br/sigaa/portais/discente/discente.jsf'
+#         matricula_driver.get(link)
+
+#         # Login
+#         matricula_driver.find_element(By.XPATH, '//*[@id="username"]').send_keys(login)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(senha)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="login-form"]/button').click()
+
+#         # Acessar aba de matrícula extraordinária
+#         time.sleep(2)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="menu_form_menu_discente_j_id_jsp_340461267_98_menu"]/table/tbody/tr/td[1]/span[2]').click()
+#         matricula_driver.find_element(By.XPATH, '//*[@id="cmSubMenuID1"]/table/tbody/tr[13]/td[2]').click()
+#         matricula_driver.find_element(By.XPATH, '//*[@id="cmSubMenuID3"]/table/tbody/tr[3]/td[2]').click()
+
+#         # Buscar disciplina
+#         matricula_driver.find_element(By.XPATH, '//*[@id="form:txtCodigo"]').send_keys(codigo_componente)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="form:txtHorario"]').send_keys(horario)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="form:txtNomeDocente"]').send_keys(nome_prof)
+#         matricula_driver.find_element(By.NAME, 'form:buscar').send_keys("\n")
+
+#         # Selecionar turma e confirmar matrícula
+#         time.sleep(2)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="form:selecionarTurma"]/img').click()
+#         matricula_driver.find_element(By.XPATH, '//*[@id="j_id_jsp_334536566_1:Data"]').send_keys(data_nascimento)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="j_id_jsp_334536566_1:senha"]').send_keys(senha)
+#         matricula_driver.find_element(By.XPATH, '//*[@id="j_id_jsp_334536566_1:btnConfirmar"]').click()
+
+#         # Aceita alerta
+#         WebDriverWait(matricula_driver, 5).until(EC.alert_is_present())
+#         matricula_driver.switch_to.alert.accept()
+
+#         print(f"{pegaHoras()} Matrícula realizada com sucesso para {codigo_componente} - {nome_prof} - {horario}")
+#         matricula_driver.quit()
+
+#     except Exception as e:
+#         print(f"{pegaHoras()} Erro ao tentar se matricular: {e}")
+
 
 # Sistema de notificação
 
@@ -61,7 +118,7 @@ def verificarVaga():
     options = webdriver.ChromeOptions()
     
     # Para executar sem abrir a janela do navegador, descomente a linha abaixo:
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
 
     driver = webdriver.Chrome(service=service, options=options)
 
@@ -100,8 +157,7 @@ def verificarVaga():
             )
             botao_buscar.click()
         except:
-            hora_atual = pegaHoras()
-            print(f"{hora_atual} Não foi possível clicar no botão Buscar para {horario} com {prof}.")
+            print(f"{pegaHoras()} Não foi possível clicar no botão Buscar para {horario} com {prof}.")
             driver.get(url)
             continue
 
@@ -111,8 +167,7 @@ def verificarVaga():
                 EC.presence_of_element_located((By.XPATH, '//table[@class="listagem"]'))
             )
         except:
-            hora_atual = pegaHoras()
-            print(f"{hora_atual} Tabela de resultados não carregou para {horario} com {prof}.")
+            print(f"{pegaHoras()} Tabela de resultados não carregou para {horario} com {prof}.")
             driver.get(url)
             continue
 
@@ -124,8 +179,7 @@ def verificarVaga():
 
         # Se não encontrar uma matéria, parte para a próxima
         if not resultado_pesquisa.strip():
-            hora_atual = pegaHoras()
-            print(f"{hora_atual} A matéria de {horario} com {prof} não foi encontrada.")
+            print(f"{pegaHoras()} A matéria de {horario} com {prof} não foi encontrada.")
             driver.get(url)
             continue
 
@@ -135,18 +189,16 @@ def verificarVaga():
             total_vaga = int(partes[-5]) # Pega o total de vagas
             vaga = int(partes[-4]) # Pega a quantidade de matriculados
         except (IndexError, ValueError):
-            hora_atual = pegaHoras()
-            print(f"{hora_atual} Erro ao analisar os dados de vagas da matéria de {horario} com {prof}.")
+            print(f"{pegaHoras()} Erro ao analisar os dados de vagas da matéria de {horario} com {prof}.")
             driver.get(url)
             continue
 
         if(vaga < total_vaga):
-            hora_atual = pegaHoras()
-            print(f"{hora_atual} Tem vaga {horario} com {prof}")
+            print(f"{pegaHoras()} Tem vaga {horario} com {prof}")
             notificarVaga(prof)
+            # realizarMatricula(info_materia["codigo"], horario, prof)
         else:
-            hora_atual = pegaHoras()
-            print(f"{hora_atual} Não tem vaga {horario} com {prof}")
+            print(f"{pegaHoras()} Não tem vaga {horario} com {prof}")
         
         # Recarrega a página para a próxima iteração
         driver.get(url)
@@ -158,9 +210,7 @@ scheduler = BlockingScheduler()
 scheduler.add_job(verificarVaga, 'interval', seconds=30)
 
 try:
-    hora_atual = pegaHoras()
-    print(f"{hora_atual} Monitoramento iniciado...\nPressione Ctrl+C para encerrar.")
+    print(f"{pegaHoras()} Monitoramento iniciado...\nPressione Ctrl+C para encerrar.")
     scheduler.start()
 except (KeyboardInterrupt, SystemExit):
-    hora_atual = pegaHoras()
-    print(f"\n{hora_atual} Monitoramento encerrado pelo usuário.")
+    print(f"\n{pegaHoras()} Monitoramento encerrado pelo usuário.")
