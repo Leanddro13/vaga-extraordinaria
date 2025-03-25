@@ -54,7 +54,7 @@ Preencha com suas informações de login no SIGAA, conforme o .env.example.
 ### 3. Dê permissão e execute o script de instalação
 
 ```bash
-chmod +x install.sh
+sudo chmod +x install.sh
 sudo ./install.sh
 ```
 
