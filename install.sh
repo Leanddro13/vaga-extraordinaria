@@ -12,7 +12,7 @@ distro=$(grep "^ID=" /etc/os-release | awk -F= '{print tolower($2)}' | tr -d '"'
 
 # Define os pacotes com base nas distros-mãe
 pacotes_debian_base="pulseaudio-utils dbus-python-devel python3-dbus google-chrome-stable"
-pacotes_rhel_base="pulseaudio-utils python3-dbus google-chrome-stable"
+pacotes_rhel_base="pulseaudio-utils dbus-python-devel python3-dbus google-chrome-stable"
 
 # TODO: testei os IDs só para rhel, fedora, debian, ubuntu e vi que no centos às vezes tem IDs diferentes a depender da versão, mas deixei a "padrão"
 
