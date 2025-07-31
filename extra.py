@@ -1,9 +1,10 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from urllib.request import urlopen
 from urllib.error import *
+
+import time
 
 
 driver = webdriver.Chrome()
@@ -58,3 +59,4 @@ while True:
             
     except Exception as e:
         pass
+
